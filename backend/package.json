@@ -20,6 +20,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "helmet": "^3.21.3",
     "idtoken-verifier": "^2.0.2",
     "jsonwebtoken": "^8.5.1"
   },

@@ -2,7 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const IdTokenVerifier = require('idtoken-verifier');
 
+const helmet = require('helmet');
+
+
 const app = express();
+app.use(helmet());
 app.use(cors());
 
 const verifier = new IdTokenVerifier({
@@ -12,7 +16,9 @@ const verifier = new IdTokenVerifier({
 
 app.options('/api/login', cors());
 app.get('/api/login', function(req, res) {
-	const token = req.headers.authorization.split(' ')[1];
+	let token = '';
+	if (req.headers.authorization)
+		token = req.headers.authorization.split(' ')[1];
 	const nonce = req.headers.nonce;
 
 	verifier.verify(token, nonce, (error, payload) => {
