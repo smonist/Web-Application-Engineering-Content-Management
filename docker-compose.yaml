@@ -1,15 +1,38 @@
 version: "3"
 
 services:
+  frontend:
+    container_name: frontend-container
+    image: 030395/waecm-2020-group-20-bsp-1-frontend:v1
+    volumes:
+      - app:/usr/src/app/frontend
+    ports:
+      - ${FRONTEND_PORT}:4200
+    depends_on:
+      - backend
+
   backend:
     container_name: backend-container
     restart: always
-    build: backend
+    image: 030395/waecm-2020-group-20-bsp-1-backend:v1
+    volumes:
+      - app:/usr/src/app/backend
     ports:
-      - "3000:3000"
+      - ${BACKEND_PORT}:3000
+    depends_on:
+      - dbs
 
-  frontend:
-    container_name: frontend-container
-    build: frontend
+  dbs:
+    container_name: dbs_container
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: app-dbs
+    volumes:
+      - app:/var/lib/postgresql/data
     ports:
-      - "4200:4200"
+      - ${DBS_PORT}:5432
+
+volumes:
+  app:
