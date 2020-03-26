@@ -25,6 +25,9 @@ Following variables have to be set:
 FRONTEND_PORT
 BACKEND_PORT
 DBS_PORT
+
+# DBS ENV VARIABLES
+
 POSTGRES_PASSWORD: admin
 POSTGRES_USER: admin
 POSTGRES_DB: app-dbs
