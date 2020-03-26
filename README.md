@@ -16,9 +16,9 @@ For the application followin technologies are going to be used:
 
 ## DOCKER IMG frontend
 
-- docker-hub-repo=030395/waecm-2020-group-20-bsp-1-frontend:v1
+- docker-hub-repo=030395/waecm-2020-group-20-bsp-1-frontend:v2
 - name=waecm-2020-group-20-bsp-1-frontend
-- hash=00b096c3fce0
+- hash=a506c1b3de87
 
 ## DOCKER ENV VARIABLES
 
