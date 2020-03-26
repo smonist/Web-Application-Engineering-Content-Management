@@ -1,5 +1,5 @@
 FROM node:12.15.0-alpine AS build
-WORKDIR /usr/src/app/frontend
+WORKDIR /usr/src/app/
 COPY package*.json ./
 RUN npm install
 COPY . .
