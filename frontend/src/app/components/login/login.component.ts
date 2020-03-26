@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
   onLogin() {
     this.loggedIn = true;
     // tslint:disable-next-line:max-line-length
-    const url = 'https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm/protocol/openid-connect/auth?client_id=waecm&response_type=id_token&prompt=consent&redirect_uri=http%3A%2F%2Flocalhost%3A4200&scope=openid%20profile&nonce=12345';
+    const url = 'https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm/protocol/openid-connect/auth?client_id=waecm&response_type=id_token&prompt=consent&redirect_uri=http://localhost%3A4200%2Fprofile&scope=openid%20profile&nonce=12345';
     const nonce = this.getRandomStringURL(16);
     window.location.href = url + nonce;
   }

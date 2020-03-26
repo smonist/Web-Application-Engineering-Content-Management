@@ -19,6 +19,8 @@
     "@angular/platform-browser": "~9.0.7",
     "@angular/platform-browser-dynamic": "~9.0.7",
     "@angular/router": "~9.0.7",
+    "idtoken-verifier": "^2.0.2",
+    "jwt-decode": "^2.2.0",
     "@okta/okta-auth-js": "^3.0.0",
     "angular-oauth2-oidc": "^3.1.4",
     "angular-oauth2-oidc-jwks": "^9.0.0",

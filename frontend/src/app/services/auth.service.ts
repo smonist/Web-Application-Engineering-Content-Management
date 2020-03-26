@@ -1,20 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import * as uuid from 'uuid';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+
+  nonce: string;
+
+  constructor(private http: HttpClient) {
+    this.nonce = uuid();
+  }
 
   endpoint = environment.API_ENDPOINT;
 
-  verifyToken(token: string, nonce: string) {
+
+  verifyToken(token: string) {
     const httpOptions = {
       headers: new HttpHeaders({
         Authorization: token,
-        Nonce: nonce
+        Nonce: this.nonce
       })
     };
 
