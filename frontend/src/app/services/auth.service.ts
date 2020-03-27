@@ -14,7 +14,7 @@ export class AuthService {
   clientId = 'waecm';
   responseType = 'id_token';
   prompt = 'consent';
-  redirectUri = 'http://localhost%3A4200%2Fprofile';
+  redirectUri = 'http://localhost%3A4200%2Fdashboard';
   scope = 'openid%20profile';
   nonce: string;
   loginUrl: string;

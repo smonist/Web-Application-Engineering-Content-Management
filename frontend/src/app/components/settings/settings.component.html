@@ -1,0 +1,26 @@
+<app-nav></app-nav>
+
+<div class="container">
+  <h1 class="heading">Edit your added subreddits.</h1>
+
+  <div class="add flex" [routerLink]="['/add']">
+    <h4>Add Subreddit</h4>
+    <fa-icon [icon]="faPlus"></fa-icon>
+  </div>
+
+  <div
+    class="sub flex"
+    *ngFor="let sub of subreddits$ | async"
+    [ngClass]="{ deactivated: !sub.active }"
+  >
+    <div class="desc" [routerLink]="['/add', sub.id]">
+      <h1>{{ sub.name }}</h1>
+      <span>{{ sub.added | date }}</span>
+    </div>
+    <fa-icon
+      class="delete"
+      [icon]="faTimesCircle"
+      (click)="deleteSub(sub.id)"
+    ></fa-icon>
+  </div>
+</div>

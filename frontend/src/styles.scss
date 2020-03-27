@@ -1,2 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~bootstrap/dist/css/bootstrap.css';
+
+* {
+  outline: none !important;
+  transition: all 0.1s ease-out;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
-import { ProfileComponent } from './components/profile/profile.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginGuard } from './guards/login.guard';
+import { SettingsComponent } from './components/settings/settings.component';
+import { AddSubredditComponent } from './components/add-subreddit/add-subreddit.component';
 
 const routes: Routes = [
   {
@@ -15,8 +17,23 @@ const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'profile',
-    component: ProfileComponent,
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [LoginGuard]
+  },
+  {
+    path: 'settings',
+    component: SettingsComponent,
+    canActivate: [LoginGuard]
+  },
+  {
+    path: 'add',
+    component: AddSubredditComponent,
+    canActivate: [LoginGuard]
+  },
+  {
+    path: 'add/:id',
+    component: AddSubredditComponent,
     canActivate: [LoginGuard]
   },
   {

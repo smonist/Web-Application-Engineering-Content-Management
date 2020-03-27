@@ -1,5 +1,18 @@
-<nav *ngIf="loggedIn$ | async">
-  <span id="username">Hello, {{ (profile$ | async).name }}</span>
-
-  <fa-icon [icon]="faSignOutAlt" (click)="logout()"></fa-icon>
+<nav class="btn-group btn-group-toggle nav">
+  <span
+    ngbButtonLabel
+    class="btn-primary"
+    [routerLink]="['/dashboard']"
+    [routerLinkActive]="['active']"
+  >
+    Dashboard
+  </span>
+  <span
+    ngbButtonLabel
+    class="btn-primary"
+    [routerLink]="['/settings']"
+    [routerLinkActive]="['active']"
+  >
+    Settings
+  </span>
 </nav>

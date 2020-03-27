@@ -1,0 +1,47 @@
+.add {
+  cursor: pointer;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+
+  h4 {
+    margin: 0px;
+  }
+
+  fa-icon {
+    margin-left: 10px;
+    font-size: 1.5rem;
+  }
+
+  &:hover {
+    color: rgb(63, 63, 63);
+  }
+}
+
+.sub {
+  cursor: pointer;
+  justify-content: space-between;
+
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(177, 177, 177);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.deactivated {
+  filter: opacity(0.7);
+}
+
+.desc {
+  width: 100%;
+}
+
+.delete {
+  cursor: pointer;
+  font-size: 2rem;
+
+  &:hover {
+    color: rgb(231, 47, 47);
+  }
+}

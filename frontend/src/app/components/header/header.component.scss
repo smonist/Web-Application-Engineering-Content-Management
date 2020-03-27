@@ -1,0 +1,27 @@
+
+.spacer {
+  height: 50px;
+}
+
+nav {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  padding: 0px 20px;
+  font-size: 1.3rem;
+
+  position: fixed;
+  top: 0px;
+  width: 100%;
+}
+
+#username {
+  margin-right: 20px;
+}
+
+fa-icon:hover {
+  cursor: pointer;
+  color: black;
+}

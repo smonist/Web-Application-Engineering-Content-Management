@@ -23,8 +23,6 @@ app.get('/api/login', function(req, res) {
 			algorithms: ['RS256']
 		},
 		(err, decoded) => {
-			console.log(err, decoded);
-
 			if (err) {
 				console.log('Error while verify');
 				console.log(err);

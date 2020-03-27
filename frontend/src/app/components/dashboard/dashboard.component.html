@@ -1,0 +1,28 @@
+<app-nav></app-nav>
+
+<div class="container">
+  <h1 class="heading">Your added subreddits.</h1>
+
+  <h2 *ngIf="(subreddits$ | async)?.length === 0">
+    No Subreddits added yet. Add your first subreddit
+    <a [routerLink]="['/add']">here</a>
+  </h2>
+
+  <div class="sub" *ngFor="let sub of subreddits$ | async">
+    <div class="flex">
+      <img [src]="sub.pic" alt="" />
+      <div>
+        <h1>
+          <a [href]="'https://www.reddit.com/' + sub.name" target="_blank">
+            {{ sub.name }}
+          </a>
+        </h1>
+        <span>{{ sub.desc }}</span>
+      </div>
+    </div>
+    <div class="answers flex">
+      <fa-icon [icon]="faComment"></fa-icon>
+      <span>{{ sub.answers }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="spacer"></div>
+
+<nav *ngIf="loggedIn$ | async">
+  <span id="username">Hello, {{ (profile$ | async).name }}</span>
+
+  <fa-icon [icon]="faSignOutAlt" (click)="open(content)"></fa-icon>
+</nav>
+
+<!-- logout modal -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">
+      Do you really want to log out?
+    </h4>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="modal.close(false)"
+    >
+      No
+    </button>
+
+    <button type="button" class="btn btn-primary" (click)="modal.close(true)">
+      Yes
+    </button>
+  </div>
+</ng-template>

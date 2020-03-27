@@ -1,0 +1,77 @@
+<app-nav></app-nav>
+
+<div class="container">
+  <form [formGroup]="add" (submit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Subreddit: </label>
+      <input
+        type="text"
+        class="form-control"
+        id="name"
+        placeholder="Enter subreddit"
+        formControlName="name"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="keywords">Keywords: (seperated with a space)</label>
+      <input
+        type="text"
+        class="form-control"
+        id="keywords"
+        placeholder="programming javascript monney"
+        formControlName="keywords"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="answer">Answer: </label>
+      <textarea
+        type="text"
+        class="form-control"
+        id="answer"
+        placeholder="Your answer ..."
+        formControlName="answer"
+      ></textarea>
+    </div>
+
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="active"
+        [value]="true"
+        formControlName="active"
+      />
+      <label class="form-check-label" for="active">
+        Active
+      </label>
+    </div>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="notActive"
+        [value]="false"
+        formControlName="active"
+      />
+      <label class="form-check-label" for="notActive">
+        Not active
+      </label>
+    </div>
+
+    <div class="buttons">
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        [routerLink]="['/dashboard']"
+      >
+        Cancle
+      </button>
+
+      <button [disabled]="!add.valid" type="submit" class="btn btn-primary">
+        Save
+      </button>
+    </div>
+  </form>
+</div>
