@@ -1,0 +1,5 @@
+<nav *ngIf="loggedIn$ | async">
+  <span id="username">Hello, {{ (profile$ | async).name }}</span>
+
+  <fa-icon [icon]="faSignOutAlt" (click)="logout()"></fa-icon>
+</nav>
