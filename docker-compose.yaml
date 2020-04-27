@@ -4,7 +4,7 @@ services:
   frontend:
     container_name: frontend-container
     build: ./frontend
-    image: 030395/waecm-2020-group-20-bsp-2-backend:v1
+    image: 030395/waecm-2020-group-20-bsp-2-frontend:v1
     volumes:
       - app:/usr/src/app/frontend
     ports:
