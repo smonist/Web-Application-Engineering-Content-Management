@@ -3,18 +3,22 @@ version: "3"
 services:
   frontend:
     container_name: frontend-container
-    image: 030395/waecm-2020-group-20-bsp-1-frontend:v2
+    build: ./frontend
+    image: 030395/waecm-2020-group-20-bsp-2-backend:v1
     volumes:
       - app:/usr/src/app/frontend
     ports:
       - ${FRONTEND_PORT}:4200
+    links: 
+      - backend
     depends_on:
       - backend
 
   backend:
     container_name: backend-container
     restart: always
-    image: 030395/waecm-2020-group-20-bsp-1-backend:v1
+    build: ./backend
+    image: 030395/waecm-2020-group-20-bsp-2-backend:v1
     volumes:
       - app:/usr/src/app/backend
     ports:
