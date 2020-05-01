@@ -4,12 +4,16 @@ const cors = require('cors');
 const helmet = require('helmet');
 const jwt = require('jsonwebtoken');
 
+// DB
+const { Client } = require('pg');
+const client = new Client();
+
 const app = express();
 app.use(helmet());
 app.use(cors());
 
 app.options('/api/login', cors());
-app.get('/api/login', function(req, res) {
+app.get('/api/login', (req, res) => {
 	let token = '';
 	if (req.headers.authorization)
 		token = req.headers.authorization.split(' ')[1];
@@ -20,7 +24,7 @@ app.get('/api/login', function(req, res) {
 		{
 			audience: 'waecm',
 			issuer: 'https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm',
-			algorithms: ['RS256']
+			algorithms: ['RS256'],
 		},
 		(err, decoded) => {
 			if (err) {
@@ -40,6 +44,22 @@ app.get('/api/login', function(req, res) {
 	);
 });
 
-app.listen(3000, function() {
+app.options('/api/test', cors());
+app.get('/api/test', async (req, res) => {
+	try {
+		await client.connect();
+		const temp = await client.query('SELECT $1::text as message', [
+			'Hello world!',
+		]);
+		console.log(temp.rows[0].message); 
+		await client.end();
+	} catch (err) {
+		console.log(err);
+	}
+
+	res.status(200).json({ success: true });
+});
+
+app.listen(3000, function () {
 	console.log('Example app listening on port 3000!');
 });
