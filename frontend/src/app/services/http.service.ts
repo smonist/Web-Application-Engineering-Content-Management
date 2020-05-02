@@ -29,6 +29,14 @@ export class HttpService {
     );
   }
 
+  updateSubreddit(sub: Subreddit) {
+    return this.http.post(
+      this.endpoint + 'updateSubreddit',
+      sub,
+      this.auth.getAuthHeader()
+    );
+  }
+
   deleteSub(id: string) {
     const params = new HttpParams().set('id', id);
     return this.http.get(this.endpoint + 'deleteSubreddit', {

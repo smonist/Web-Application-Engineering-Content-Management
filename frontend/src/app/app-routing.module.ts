@@ -5,45 +5,46 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginGuard } from './guards/login.guard';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AddSubredditComponent } from './components/add-subreddit/add-subreddit.component';
+import { UpdatesubComponent } from './components/updatesub/updatesub.component';
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: '/login',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
   },
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [LoginGuard]
+    canActivate: [LoginGuard],
   },
   {
     path: 'settings',
     component: SettingsComponent,
-    canActivate: [LoginGuard]
+    canActivate: [LoginGuard],
   },
   {
     path: 'add',
     component: AddSubredditComponent,
-    canActivate: [LoginGuard]
+    canActivate: [LoginGuard],
   },
   {
-    path: 'add/:id',
-    component: AddSubredditComponent,
-    canActivate: [LoginGuard]
+    path: 'update',
+    component: UpdatesubComponent,
+    canActivate: [LoginGuard],
   },
   {
     path: '**',
-    redirectTo: '/login'
-  }
+    redirectTo: '/login',
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}

@@ -102,6 +102,7 @@ app.post('/api/addSubreddit', async (req, res) => {
 	} catch (err) {
 		console.log(err);
 	}
+	
 	const query = `
 		INSERT INTO subreddits(sub, pic, name, description, answers, added, active, answer, keywords) VALUES($1, $2, $3, $4, 0, $5, $6, $7, $8) RETURNING *
 	`;
@@ -127,53 +128,73 @@ app.post('/api/addSubreddit', async (req, res) => {
 	res.status(200).json({ success: true });
 });
 
-// TODO Implement function
+app.options('/api/updateSubreddit', cors());
+app.post('/api/updateSubreddit', async (req, res) => {
+	const sub = getSub(req);
+
+	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
+
+	const body = req.body;
+
+	let query = `
+		UPDATE subreddits
+		SET answer = $1, keywords = $2, active = $3
+		WHERE id = $4;
+	`;
+
+	let values = [body.answer, body.keywords, body.active, body.id];
+
+	try {
+		await pool.query(query, values);
+		res.status(200).json({ success: true });
+	} catch (err) {
+		console.log(err.stack);
+		res.status(404).send('HTTP 404 Not found');
+	}
+});
+
 // Deletes subreddit for user
 app.options('/api/deleteSubreddit', cors());
 app.get('/api/deleteSubreddit', async (req, res) => {
 	const sub = getSub(req);
 	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
-
 	const id = req.query.id;
-	res.status(200).json({ success: true });
+
+	const query = `
+		DELETE FROM subreddits WHERE id = $1
+	`;
+
+	const values = [id];
+
+	try {
+		await pool.query(query, values);
+		res.status(200).json({ success: true });
+	} catch (err) {
+		console.log(err);
+		res.status(200).json([]);
+	}
 });
 
-// TODO Implement function
 // Gets all subreddits
 app.options('/api/getSubreddits', cors());
 app.get('/api/getSubreddits', async (req, res) => {
 	const sub = getSub(req);
 	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
 
-	// Mock data
-	res.status(200).json([
-		{
-			id: '1',
-			pic:
-				'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/768px-Angular_full_color_logo.svg.png',
-			name: 'r/angular',
-			desc: 'Front page of angular',
-			answers: 3,
-			added: new Date(),
-			active: false,
-		},
-	]);
-});
-
-app.options('/api/test', cors());
-app.get('/api/test', async (req, res) => {
-	// Create Tables
-	const createUsers = `
-	DROP DATABASE users
+	const query = `
+		SELECT * FROM subreddits WHERE sub = $1
 	`;
-	// async/await
+
+	const values = [sub];
+
 	try {
-		await pool.query(createUsers);
+		const ret = await pool.query(query, values);
+		console.log(ret.rows);
+		res.status(200).json(ret.rows);
 	} catch (err) {
 		console.log(err);
+		res.status(404).send('HTTP 404 Not found');
 	}
-
-	res.status(200).json({ success: true });
 });
 
 app.listen(3000, async () => {
