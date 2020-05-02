@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { Subreddit } from 'src/app/models/subreddit';
 import { HttpService } from 'src/app/services/http.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-settings',
@@ -16,7 +18,12 @@ export class SettingsComponent implements OnInit {
   faPlus = faPlus;
   faTimesCircle = faTimesCircle;
 
-  constructor(private http: HttpService, private modalService: NgbModal) {
+  constructor(
+    private http: HttpService,
+    private modalService: NgbModal,
+    private router: Router,
+    private data: DataService
+  ) {
     this.http.getSubreddits().subscribe((res) => (this.subreddits = res));
   }
 
@@ -36,5 +43,12 @@ export class SettingsComponent implements OnInit {
         },
         (reason) => {}
       );
+  }
+
+  update(sub: Subreddit) {
+    console.log(sub);
+    this.data.updateSubreddit(sub);
+
+    this.router.navigate(['update']);
   }
 }

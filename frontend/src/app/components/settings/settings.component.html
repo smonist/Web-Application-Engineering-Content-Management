@@ -13,7 +13,7 @@
     *ngFor="let sub of subreddits"
     [ngClass]="{ deactivated: !sub.active }"
   >
-    <div class="desc" [routerLink]="['/add', sub.id]">
+    <div class="desc" (click)="update(sub)">
       <h1>{{ sub.name }}</h1>
       <span>{{ sub.added | date }}</span>
     </div>

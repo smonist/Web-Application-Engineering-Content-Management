@@ -4,6 +4,8 @@ export interface Subreddit {
   name: string;
   desc: string;
   answers: number;
+  answer: string;
+  keywords: string[];
   added: Date;
   active: boolean;
 }

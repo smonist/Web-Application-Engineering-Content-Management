@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Profile } from '../models/profile';
+import { Subreddit } from '../models/subreddit';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataService {
   private loggedInSource = new BehaviorSubject<boolean>(false);
@@ -15,8 +16,11 @@ export class DataService {
   private profileSource = new BehaviorSubject<Profile>(null);
   profile$ = this.profileSource.asObservable();
 
+  private subredditSource = new BehaviorSubject<Subreddit>(null);
+  subreddit$ = this.subredditSource.asObservable();
+
   constructor() {
-    this.loggedIn$.subscribe(res => (this.loggedIn = res));
+    this.loggedIn$.subscribe((res) => (this.loggedIn = res));
   }
 
   updateLoginStatus(status: boolean) {
@@ -25,5 +29,9 @@ export class DataService {
 
   updateProfile(profile: Profile) {
     this.profileSource.next(profile);
+  }
+
+  updateSubreddit(subreddit: Subreddit) {
+    this.subredditSource.next(subreddit);
   }
 }
