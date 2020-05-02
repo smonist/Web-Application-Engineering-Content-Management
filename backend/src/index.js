@@ -22,6 +22,8 @@ const schedule = require('node-schedule');
 
 const fetch = require('node-fetch');
 
+const { getSub } = require('./helpers');
+
 const app = express();
 app.use(helmet());
 app.use(cors());
@@ -72,6 +74,49 @@ app.get('/api/subredditValid', async (req, res) => {
 	return;
 });
 
+// TODO Implement function
+// Adds subreddit for user
+app.options('/api/addSubreddit', cors());
+app.post('/api/addSubreddit', async (req, res) => {
+	const sub = getSub(req);
+	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
+
+	res.status(200).json({ success: true });
+});
+
+// TODO Implement function
+// Deletes subreddit for user
+app.options('/api/deleteSubreddit', cors());
+app.get('/api/deleteSubreddit', async (req, res) => {
+	const sub = getSub(req);
+	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
+
+	const id = req.query.id;
+	res.status(200).json({ success: true });
+});
+
+// TODO Implement function
+// Gets all subreddits
+app.options('/api/getSubreddits', cors());
+app.get('/api/getSubreddits', async (req, res) => {
+	const sub = getSub(req);
+	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
+
+	// Mock data
+	res.status(200).json([
+		{
+			id: '1',
+			pic:
+				'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/768px-Angular_full_color_logo.svg.png',
+			name: 'r/angular',
+			desc: 'Front page of angular',
+			answers: 3,
+			added: new Date(),
+			active: false,
+		},
+	]);
+});
+
 app.options('/api/test', cors());
 app.get('/api/test', async (req, res) => {
 	try {
@@ -79,7 +124,7 @@ app.get('/api/test', async (req, res) => {
 		const temp = await client.query('SELECT $1::text as message', [
 			'Hello world!',
 		]);
-		console.log(temp.rows[0].message); 
+		console.log(temp.rows[0].message);
 		await client.end();
 	} catch (err) {
 		console.log(err);
@@ -90,6 +135,7 @@ app.get('/api/test', async (req, res) => {
 
 app.listen(3000, function () {
 	console.log('Example app listening on port 3000!');
+	
 	// Run checkComments routine every minute
 	const rule = new schedule.RecurrenceRule();
 	schedule.scheduleJob(rule, function () {

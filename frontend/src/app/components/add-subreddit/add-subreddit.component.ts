@@ -13,6 +13,7 @@ import {
   faCheck,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-subreddit',
@@ -31,14 +32,20 @@ export class AddSubredditComponent implements OnInit {
   faCheck = faCheck;
   faTimes = faTimes;
 
-  constructor(private fb: FormBuilder, private http: HttpService) {}
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {}
 
   onSubmit() {
     const value = this.add.value;
     value.keywords = value.keywords.split(' ');
-    this.http.addSubreddit(value);
+    this.http
+      .addSubreddit(value)
+      .subscribe((res) => this.router.navigate(['/dashboard']));
   }
 
   validateSubreddit(): AsyncValidatorFn {

@@ -4,9 +4,10 @@ import { environment } from 'src/environments/environment';
 import * as uuid from 'uuid';
 import { DataService } from './data.service';
 import { Router } from '@angular/router';
+import { Profile } from '../models/profile';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   base =
@@ -20,6 +21,7 @@ export class AuthService {
   loginUrl: string;
 
   endpoint = environment.API_ENDPOINT;
+  profile: Profile;
 
   constructor(
     private http: HttpClient,
@@ -35,17 +37,28 @@ export class AuthService {
       `redirect_uri=${this.redirectUri}&` +
       `scope=${this.scope}&` +
       `nonce=${this.nonce}`;
+
+    this.data.profile$.subscribe((res) => (this.profile = res));
   }
 
   verifyToken(token: string) {
     const httpOptions = {
       headers: new HttpHeaders({
         Authorization: token,
-        Nonce: this.nonce
-      })
+        Nonce: this.nonce,
+      }),
     };
 
     return this.http.get(this.endpoint + 'login', httpOptions);
+  }
+
+  getAuthHeader() {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: this.profile.sub,
+      }),
+    };
   }
 
   logout() {

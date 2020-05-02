@@ -3,6 +3,8 @@
 <nav *ngIf="loggedIn$ | async">
   <span id="username">Hello, {{ (profile$ | async).name }}</span>
 
+  <img id="pic" [src]="(profile$ | async).pic" alt="pic" />
+
   <fa-icon [icon]="faSignOutAlt" (click)="open(content)"></fa-icon>
 </nav>
 

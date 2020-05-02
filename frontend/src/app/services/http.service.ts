@@ -4,6 +4,7 @@ import { Subreddit } from '../models/subreddit';
 import { AddSubreddit } from '../models/addSubreddit';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,33 +12,36 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 export class HttpService {
   endpoint = environment.API_ENDPOINT;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private auth: AuthService) {}
 
   getSubreddits(): Observable<Subreddit[]> {
-    return of([
-      {
-        id: '1',
-        pic:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/768px-Angular_full_color_logo.svg.png',
-        name: 'r/angular',
-        desc: 'Front page of angular',
-        answers: 3,
-        added: new Date(),
-        active: false,
-      },
-    ]);
+    return this.http.get<Subreddit[]>(
+      this.endpoint + 'getSubreddits',
+      this.auth.getAuthHeader()
+    );
   }
 
   addSubreddit(sub: AddSubreddit) {
-    console.log(sub);
+    return this.http.post(
+      this.endpoint + 'addSubreddit',
+      sub,
+      this.auth.getAuthHeader()
+    );
   }
 
   deleteSub(id: string) {
-    console.log(id);
+    const params = new HttpParams().set('id', id);
+    return this.http.get(this.endpoint + 'deleteSubreddit', {
+      params,
+      ...this.auth.getAuthHeader(),
+    });
   }
 
   checkSubredditValid(name: string) {
     const params = new HttpParams().set('subreddit', name);
-    return this.http.get(this.endpoint + 'subredditValid', { params });
+    return this.http.get(this.endpoint + 'subredditValid', {
+      params,
+      ...this.auth.getAuthHeader(),
+    });
   }
 }

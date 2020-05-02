@@ -4,7 +4,7 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   UrlTree,
-  Router
+  Router,
 } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { DataService } from '../services/data.service';
@@ -13,7 +13,7 @@ import { Observable, of } from 'rxjs';
 import { tap, map, catchError } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoginGuard implements CanActivate {
   token;
@@ -59,9 +59,9 @@ export class LoginGuard implements CanActivate {
 
       // verify token with backend if token is in local storage
       return this.auth.verifyToken('Bearer ' + this.token).pipe(
-        map(res => !!res),
-        catchError(err => of(this.errorRedirect)),
-        tap(res => {
+        map((res) => !!res),
+        catchError((err) => of(this.errorRedirect)),
+        tap((res) => {
           if (res === true) {
             this.data.updateLoginStatus(true);
           }
@@ -74,11 +74,12 @@ export class LoginGuard implements CanActivate {
 
   parseProfile() {
     this.decode = jwt_decode(this.token);
-    localStorage.setItem('decode', this.decode);
+    localStorage.setItem('decode', JSON.stringify(this.decode));
 
     this.data.updateProfile({
+      sub: this.decode.sub,
       name: this.decode.name,
-      pic: this.decode.picture
+      pic: this.decode.picture,
     });
   }
 }
