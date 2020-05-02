@@ -5,8 +5,13 @@ const helmet = require('helmet');
 const jwt = require('jsonwebtoken');
 
 // DB
-const { Client } = require('pg');
-const client = new Client();
+const { Pool } = require('pg');
+const pool = new Pool({
+	user: 'admin',
+	host: 'localhost',
+	database: 'app-dbs',
+	password: 'admin',
+});
 
 // Reddit APi
 const snoowrap = require('snoowrap');
@@ -27,6 +32,8 @@ const { getSub } = require('./helpers');
 const app = express();
 app.use(helmet());
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.options('/api/login', cors());
 app.get('/api/login', (req, res) => {
@@ -81,6 +88,38 @@ app.post('/api/addSubreddit', async (req, res) => {
 	const sub = getSub(req);
 	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
 
+	const body = req.body;
+
+	// try {
+	// 	const subreddit = await r.getSubreddit('realEstate');
+	// 	const topPosts = await subreddit;
+	// 	console.log(subreddit);
+	// } catch (err) {
+	// 	console.log(err);
+	// }
+
+	const query = `
+		INSERT INTO subreddits(sub, pic, name, description, answers, added, active, answer, keywords) VALUES($1, $2, $3, $4, 0, $5, $6, $7, $8) RETURNING *
+	`;
+
+	const values = [
+		sub,
+		'pic',
+		body.name,
+		'description',
+		Date.now(),
+		body.active,
+		body.answer,
+		body.keywords,
+	];
+
+	try {
+		const res = await pool.query(query, values);
+		console.log(res.rows[0]);
+	} catch (err) {
+		console.log(err.stack);
+	}
+
 	res.status(200).json({ success: true });
 });
 
@@ -119,13 +158,13 @@ app.get('/api/getSubreddits', async (req, res) => {
 
 app.options('/api/test', cors());
 app.get('/api/test', async (req, res) => {
+	// Create Tables
+	const createUsers = `
+	DROP DATABASE users
+	`;
+	// async/await
 	try {
-		await client.connect();
-		const temp = await client.query('SELECT $1::text as message', [
-			'Hello world!',
-		]);
-		console.log(temp.rows[0].message);
-		await client.end();
+		await pool.query(createUsers);
 	} catch (err) {
 		console.log(err);
 	}
@@ -133,9 +172,31 @@ app.get('/api/test', async (req, res) => {
 	res.status(200).json({ success: true });
 });
 
-app.listen(3000, function () {
+app.listen(3000, async () => {
 	console.log('Example app listening on port 3000!');
-	
+
+	// Create Tables
+	const createUsers = `
+	CREATE TABLE IF NOT EXISTS subreddits (
+		id SERIAL PRIMARY KEY,
+		sub varchar NOT NULL,
+		pic varchar NOT NULL,
+		name varchar NOT NULL,
+		description varchar NOT NULL,
+		answers integer NOT NULL,
+		answer varchar NOT NULL,
+		keywords varchar[] NOT NULL,
+		added bigint NOT NULL,
+		active BOOLEAN NOT NULL
+	);
+	`;
+
+	try {
+		await pool.query(createUsers);
+	} catch (err) {
+		console.log(err);
+	}
+
 	// Run checkComments routine every minute
 	const rule = new schedule.RecurrenceRule();
 	schedule.scheduleJob(rule, function () {
