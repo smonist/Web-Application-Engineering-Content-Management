@@ -89,24 +89,28 @@ app.post('/api/addSubreddit', async (req, res) => {
 	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
 
 	const body = req.body;
+	let pic;
+	let description;
 
-	// try {
-	// 	const subreddit = await r.getSubreddit('realEstate');
-	// 	const topPosts = await subreddit;
-	// 	console.log(subreddit);
-	// } catch (err) {
-	// 	console.log(err);
-	// }
+	// get subreddit pic and description from api
+	try {
+		let subreddit = await r.getSubreddit('realEstate');
+		subreddit = await subreddit.fetch();
 
+		pic = subreddit.community_icon;
+		description = subreddit.public_description;
+	} catch (err) {
+		console.log(err);
+	}
 	const query = `
 		INSERT INTO subreddits(sub, pic, name, description, answers, added, active, answer, keywords) VALUES($1, $2, $3, $4, 0, $5, $6, $7, $8) RETURNING *
 	`;
 
 	const values = [
 		sub,
-		'pic',
+		pic,
 		body.name,
-		'description',
+		description,
 		Date.now(),
 		body.active,
 		body.answer,
