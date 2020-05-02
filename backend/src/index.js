@@ -212,3 +212,58 @@ app.listen(3000, async () => {
 function checkComments() {
 	console.log('The answer to life, the universe, and everything!');
 }
+
+app.options('/api/1', cors());
+app.get('/api/1', async (req, res) => {
+	let comments = await getCommentsFromSubReddit('realEstate');
+	res.status(200).json(comments);;
+});
+
+async function getCommentsFromSubReddit(subName) {
+	// get keywords from database
+	let query = `SELECT keywords FROM subreddits WHERE name = $1`;
+	let result;
+
+	try {
+		result = await pool.query(query, [ subName ]);
+	} catch (err) {
+		console.log(err);
+	}
+
+	let keywords = [];
+	for (var i = 0; i < result.rows.length; i++) {
+		keywords.push(result.rows[i].keywords);
+	}
+
+	keywords = flattenDeep(keywords);
+
+
+	// get comments from reddit
+	try {
+		let subreddit = await r.getSubreddit(subName);
+		let comments = await subreddit.getNewComments();
+
+		console.log(comments.length, keywords.length, comments.length * keywords.length)
+
+		for (var i = 0; i < comments.length; i++) {
+			for (var u = 0; u < keywords.length; u++) {
+				if (comments[i].body.indexOf(keywords[u]) !== -1) {
+					console.log("RESPOND TO tHIS POst");
+					console.log(comments[i]);
+				}
+			}
+		}
+
+
+
+		return comments;
+	} catch (err) {
+		console.log(err);
+		return err;
+	}
+}
+
+// deep flatten arrays
+function flattenDeep(arr1) {
+   return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
+}
