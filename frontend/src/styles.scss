@@ -11,3 +11,11 @@
   align-items: center;
   justify-content: center;
 }
+
+.ng-valid.ng-touched {
+  border-color: green;
+}
+
+.ng-invalid.ng-touched {
+  border-color: red;
+}

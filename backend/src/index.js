@@ -8,6 +8,20 @@ const jwt = require('jsonwebtoken');
 const { Client } = require('pg');
 const client = new Client();
 
+// Reddit APi
+const snoowrap = require('snoowrap');
+const r = new snoowrap({
+	userAgent: 'bot from /u/CoolerBamio',
+	clientId: 'E3-s2ZGChD9J2A',
+	clientSecret: 'rO7VOkBeeMWl7Row4-hF2DZe2dM',
+	username: 'CoolerBamio',
+	password: 'JFeqw7pAHK3fZAcP7c83qy6Sx',
+});
+
+const schedule = require('node-schedule');
+
+const fetch = require('node-fetch');
+
 const app = express();
 app.use(helmet());
 app.use(cors());
@@ -44,6 +58,20 @@ app.get('/api/login', (req, res) => {
 	);
 });
 
+// Checks if subreddit exists
+app.options('/api/subredditValid', cors());
+app.get('/api/subredditValid', async (req, res) => {
+	const subreddit = req.query.subreddit;
+	const temp = await fetch(`https://www.reddit.com/r/${subreddit}`);
+
+	if (temp.status === 200) {
+		res.status(200).json(true);
+	} else {
+		res.status(200).json(false);
+	}
+	return;
+});
+
 app.options('/api/test', cors());
 app.get('/api/test', async (req, res) => {
 	try {
@@ -62,4 +90,14 @@ app.get('/api/test', async (req, res) => {
 
 app.listen(3000, function () {
 	console.log('Example app listening on port 3000!');
+	// Run checkComments routine every minute
+	const rule = new schedule.RecurrenceRule();
+	schedule.scheduleJob(rule, function () {
+		checkComments();
+	});
 });
+
+// TODO Implement function
+function checkComments() {
+	console.log('The answer to life, the universe, and everything!');
+}

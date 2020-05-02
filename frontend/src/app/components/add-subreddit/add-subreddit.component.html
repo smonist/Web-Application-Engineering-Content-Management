@@ -2,8 +2,8 @@
 
 <div class="container">
   <form [formGroup]="add" (submit)="onSubmit()">
-    <div class="form-group">
-      <label for="name">Subreddit: </label>
+    <label for="name">Subreddit:* </label>
+    <div class="input-group">
       <input
         type="text"
         class="form-control"
@@ -11,10 +11,28 @@
         placeholder="Enter subreddit"
         formControlName="name"
       />
+      <div class="input-group-append">
+        <fa-icon
+          class="input-group-text"
+          id="loading"
+          [icon]="faCircleNotch"
+          [spin]="true"
+        ></fa-icon>
+        <fa-icon class="input-group-text" id="valid" [icon]="faCheck"></fa-icon>
+        <fa-icon
+          class="input-group-text"
+          id="invalid"
+          [icon]="faTimes"
+        ></fa-icon>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="keywords">Keywords: (seperated with a space)</label>
+    <div class="error" *ngIf="add.get('name').errors?.subredditValid">
+      This subreddit does not exist
+    </div>
+
+    <label for="keywords">Keywords:* (seperated with a space)</label>
+    <div class="input-group">
       <input
         type="text"
         class="form-control"
@@ -24,8 +42,8 @@
       />
     </div>
 
-    <div class="form-group">
-      <label for="answer">Answer: </label>
+    <label for="answer">Answer:* </label>
+    <div class="input-group">
       <textarea
         type="text"
         class="form-control"

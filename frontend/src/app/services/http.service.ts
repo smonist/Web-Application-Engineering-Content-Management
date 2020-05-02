@@ -3,14 +3,15 @@ import { Observable, of } from 'rxjs';
 import { Subreddit } from '../models/subreddit';
 import { AddSubreddit } from '../models/addSubreddit';
 import { environment } from 'src/environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HttpService {
   endpoint = environment.API_ENDPOINT;
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   getSubreddits(): Observable<Subreddit[]> {
     return of([
@@ -22,8 +23,8 @@ export class HttpService {
         desc: 'Front page of angular',
         answers: 3,
         added: new Date(),
-        active: false
-      }
+        active: false,
+      },
     ]);
   }
 
@@ -33,5 +34,10 @@ export class HttpService {
 
   deleteSub(id: string) {
     console.log(id);
+  }
+
+  checkSubredditValid(name: string) {
+    const params = new HttpParams().set('subreddit', name);
+    return this.http.get(this.endpoint + 'subredditValid', { params });
   }
 }
