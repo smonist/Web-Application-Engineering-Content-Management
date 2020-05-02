@@ -81,7 +81,6 @@ app.get('/api/subredditValid', async (req, res) => {
 	return;
 });
 
-// TODO Implement function
 // Adds subreddit for user
 app.options('/api/addSubreddit', cors());
 app.post('/api/addSubreddit', async (req, res) => {
@@ -94,7 +93,7 @@ app.post('/api/addSubreddit', async (req, res) => {
 
 	// get subreddit pic and description from api
 	try {
-		let subreddit = await r.getSubreddit('realEstate');
+		let subreddit = await r.getSubreddit(body.name);
 		subreddit = await subreddit.fetch();
 
 		pic = subreddit.community_icon;
@@ -102,7 +101,7 @@ app.post('/api/addSubreddit', async (req, res) => {
 	} catch (err) {
 		console.log(err);
 	}
-	
+
 	const query = `
 		INSERT INTO subreddits(sub, pic, name, description, answers, added, active, answer, keywords) VALUES($1, $2, $3, $4, 0, $5, $6, $7, $8) RETURNING *
 	`;
