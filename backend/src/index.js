@@ -306,7 +306,7 @@ async function replyToAllNewComments(subName) {
 	let result;
 
 	try {
-		result = await pool.query(query, [subName]);
+		result = await pool.query(query, [ subName, true ]);
 	} catch (err) {
 		console.log(err);
 	}
@@ -320,29 +320,56 @@ async function replyToAllNewComments(subName) {
 		}
 	}
 
-	keywords = flattenDeep(keywords);
+	console.log(keywords, answers)
 
 	// get comments from reddit
 	try {
 		let subreddit = await r.getSubreddit(subName);
 		let comments = await subreddit.getNewComments();
-
-		console.log(
-			comments.length,
-			keywords.length,
-			comments.length * keywords.length
-		);
+		let hit = null;
 
 		for (var i = 0; i < comments.length; i++) {
 			for (var u = 0; u < keywords.length; u++) {
-				if (comments[i].body.indexOf(keywords[u]) !== -1) {
-					console.log('RESPOND TO tHIS POst');
-					console.log(comments[i]);
+				// check for: keywords, group name, own posts, already hit
+				if ((comments[i].body.toLowerCase().indexOf(keywords[u]) !== -1) && 
+					(comments[i].body.toLowerCase().indexOf(process.env.WAECM_GROUP_NAME) !== -1) &&
+				(comments[i].author.name !== "CoolerBamio") && (hit === null)) {
+					// check if comment already exists
+					let query = `SELECT * FROM comments WHERE comment_id = $1`;
+					let result;
+
+					try {
+						result = await pool.query(query, [ comments[i].id ]);
+						console.log(JSON.stringify(result.rows));
+					} catch (err) {
+						console.log(err);
+					}
+
+					// if not, reply
+					if (result.rows.length === 0) {
+						console.log("RESPOND TO tHIS POst", comments[i].id);
+						hit = comments[i];
+
+						comments[i].reply(answers[u]);
+
+						// save comment to database
+						query = `
+							INSERT INTO comments(comment_id, subreddit) VALUES($1, $2) RETURNING *
+						`;
+						try {
+							result = await pool.query(query, [ comments[i].id, subName ]);
+							console.log(result.rows[0]);
+						} catch (err) {
+							console.log(err.stack);
+						}
+					} else {
+						console.log("comment to this post already exists", comments[i].id);
+					}
 				}
 			}
 		}
 
-		return comments;
+		return hit;
 	} catch (err) {
 		console.log(err);
 		return err;
@@ -351,9 +378,5 @@ async function replyToAllNewComments(subName) {
 
 // deep flatten arrays
 function flattenDeep(arr1) {
-	return arr1.reduce(
-		(acc, val) =>
-			Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val),
-		[]
-	);
+   return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
 }
