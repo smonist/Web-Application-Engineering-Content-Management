@@ -139,7 +139,13 @@ app.post('/api/updateSubreddit', async (req, res) => {
 	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
 
 	// input "validation"
-	if (!isDefined(req.body) || !isDefined(req.body.keywords) || !isDefined(req.body.active) || !isDefined(req.body.answer) || !isDefined(req.body.id)) {
+	if (
+		!isDefined(req.body) ||
+		!isDefined(req.body.keywords) ||
+		!isDefined(req.body.active) ||
+		!isDefined(req.body.answer) ||
+		!isDefined(req.body.id)
+	) {
 		return res.status(400).send('HTTP 400 Bad Request');
 	}
 
@@ -175,9 +181,7 @@ app.get('/api/deleteSubreddit', async (req, res) => {
 
 	const id = parseInt(req.query.id);
 
-	if (isNaN(parseInt(id)))
-		return res.status(400).send('HTTP 400 Bad Request');
-
+	if (isNaN(parseInt(id))) return res.status(400).send('HTTP 400 Bad Request');
 
 	const query = `
 		DELETE FROM subreddits WHERE id = $1
@@ -259,7 +263,6 @@ app.listen(3000, async () => {
 		console.log(err);
 	}
 
-
 	// Run checkComments routine every minute
 	const rule = new schedule.RecurrenceRule();
 	schedule.scheduleJob(rule, function () {
@@ -275,7 +278,7 @@ async function checkComments() {
 	let result;
 
 	try {
-		result = await pool.query(query, [ true ]);
+		result = await pool.query(query, [true]);
 	} catch (err) {
 		console.log(err);
 	}
@@ -284,8 +287,7 @@ async function checkComments() {
 	for (var i = 0; i < result.rows.length; i++) {
 		hit = await replyToAllNewComments(result.rows[i].name);
 
-		if (hit !== null)
-			return hit;
+		if (hit !== null) return hit;
 	}
 
 	return hit;
@@ -293,10 +295,10 @@ async function checkComments() {
 
 /*app.options('/api/1', cors());
 app.get('/api/1', async (req, res) => {
-	// let comments = await replyToAllNewComments('test');
-	let comments = await checkComments();
+	let comments = await getCommentsFromSubReddit('realEstate');
 	res.status(200).json(comments);
-});*/
+});
+*/
 
 async function replyToAllNewComments(subName) {
 	// get keywords from database
@@ -304,7 +306,7 @@ async function replyToAllNewComments(subName) {
 	let result;
 
 	try {
-		result = await pool.query(query, [ subName, true ]);
+		result = await pool.query(query, [subName]);
 	} catch (err) {
 		console.log(err);
 	}
@@ -318,56 +320,29 @@ async function replyToAllNewComments(subName) {
 		}
 	}
 
-	console.log(keywords, answers)
+	keywords = flattenDeep(keywords);
 
 	// get comments from reddit
 	try {
 		let subreddit = await r.getSubreddit(subName);
 		let comments = await subreddit.getNewComments();
-		let hit = null;
+
+		console.log(
+			comments.length,
+			keywords.length,
+			comments.length * keywords.length
+		);
 
 		for (var i = 0; i < comments.length; i++) {
 			for (var u = 0; u < keywords.length; u++) {
-				// check for: keywords, group name, own posts, already hit
-				if ((comments[i].body.toLowerCase().indexOf(keywords[u]) !== -1) && 
-					(comments[i].body.toLowerCase().indexOf(process.env.WAECM_GROUP_NAME) !== -1) &&
-				(comments[i].author.name !== "CoolerBamio") && (hit === null)) {
-					// check if comment already exists
-					let query = `SELECT * FROM comments WHERE comment_id = $1`;
-					let result;
-
-					try {
-						result = await pool.query(query, [ comments[i].id ]);
-						console.log(JSON.stringify(result.rows));
-					} catch (err) {
-						console.log(err);
-					}
-
-					// if not, reply
-					if (result.rows.length === 0) {
-						console.log("RESPOND TO tHIS POst", comments[i].id);
-						hit = comments[i];
-
-						comments[i].reply(answers[u]);
-
-						// save comment to database
-						query = `
-							INSERT INTO comments(comment_id, subreddit) VALUES($1, $2) RETURNING *
-						`;
-						try {
-							result = await pool.query(query, [ comments[i].id, subName ]);
-							console.log(result.rows[0]);
-						} catch (err) {
-							console.log(err.stack);
-						}
-					} else {
-						console.log("comment to this post already exists", comments[i].id);
-					}
+				if (comments[i].body.indexOf(keywords[u]) !== -1) {
+					console.log('RESPOND TO tHIS POst');
+					console.log(comments[i]);
 				}
 			}
 		}
 
-		return hit;
+		return comments;
 	} catch (err) {
 		console.log(err);
 		return err;
@@ -376,5 +351,9 @@ async function replyToAllNewComments(subName) {
 
 // deep flatten arrays
 function flattenDeep(arr1) {
-   return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
+	return arr1.reduce(
+		(acc, val) =>
+			Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val),
+		[]
+	);
 }

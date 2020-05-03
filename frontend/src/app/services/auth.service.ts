@@ -56,15 +56,15 @@ export class AuthService {
     return {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: this.profile.sub,
+        Authorization: sessionStorage.getItem('token'),
       }),
     };
   }
 
   logout() {
     this.data.updateLoginStatus(false);
-    localStorage.removeItem('token');
-    localStorage.removeItem('decode');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('decode');
     this.router.navigate(['/login']);
   }
 }

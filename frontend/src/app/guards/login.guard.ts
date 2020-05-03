@@ -25,7 +25,7 @@ export class LoginGuard implements CanActivate {
     private router: Router,
     private auth: AuthService
   ) {
-    this.token = localStorage.getItem('token');
+    this.token = sessionStorage.getItem('token');
   }
 
   canActivate(
@@ -40,7 +40,7 @@ export class LoginGuard implements CanActivate {
     if (next.fragment) {
       try {
         this.token = next.fragment.split('id_token=')[1];
-        localStorage.setItem('token', this.token);
+        sessionStorage.setItem('token', this.token);
         console.log(this.token);
 
         this.parseProfile();
@@ -74,7 +74,7 @@ export class LoginGuard implements CanActivate {
 
   parseProfile() {
     this.decode = jwt_decode(this.token);
-    localStorage.setItem('decode', JSON.stringify(this.decode));
+    sessionStorage.setItem('decode', JSON.stringify(this.decode));
 
     this.data.updateProfile({
       sub: this.decode.sub,
