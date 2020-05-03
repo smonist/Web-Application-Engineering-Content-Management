@@ -17,10 +17,10 @@ const pool = new Pool({
 const snoowrap = require('snoowrap');
 const r = new snoowrap({
 	userAgent: 'bot from /u/CoolerBamio',
-	clientId: 'E3-s2ZGChD9J2A',
-	clientSecret: 'rO7VOkBeeMWl7Row4-hF2DZe2dM',
-	username: 'CoolerBamio',
-	password: 'JFeqw7pAHK3fZAcP7c83qy6Sx',
+	clientId: process.env.REDDIT_CLIENT_ID,
+	clientSecret: process.env.REDDIT_CLIENT_SECRET,
+	username: process.env.REDDIT_USERNAME,
+	password: process.env.REDDIT_PASSWORD,
 });
 
 const schedule = require('node-schedule');
@@ -199,7 +199,7 @@ app.get('/api/getSubreddits', async (req, res) => {
 app.listen(3000, async () => {
 	console.log('Example app listening on port 3000!');
 
-	// Create Tables
+	// Create User Table
 	const createUsers = `
 	CREATE TABLE IF NOT EXISTS subreddits (
 		id SERIAL PRIMARY KEY,
@@ -217,9 +217,28 @@ app.listen(3000, async () => {
 
 	try {
 		await pool.query(createUsers);
+		console.log('created user table');
 	} catch (err) {
 		console.log(err);
 	}
+
+	// create comments table
+	const createComments = `
+	CREATE TABLE IF NOT EXISTS comments (
+		"comment_id" VARCHAR NOT NULL,
+		"subreddit" VARCHAR NOT NULL,
+		"timestamp" TIMESTAMP NOT NULL DEFAULT Now(),
+		PRIMARY KEY ("comment_id")
+	)
+	`;
+
+	try {
+		await pool.query(createComments);
+		console.log('created comments table');
+	} catch (err) {
+		console.log(err);
+	}
+
 
 	// Run checkComments routine every minute
 	const rule = new schedule.RecurrenceRule();
@@ -228,55 +247,107 @@ app.listen(3000, async () => {
 	});
 });
 
-// TODO Implement function
-function checkComments() {
+async function checkComments() {
 	console.log('The answer to life, the universe, and everything!');
-}
 
-app.options('/api/1', cors());
-app.get('/api/1', async (req, res) => {
-	let comments = await getCommentsFromSubReddit('realEstate');
-	res.status(200).json(comments);;
-});
-
-async function getCommentsFromSubReddit(subName) {
-	// get keywords from database
-	let query = `SELECT keywords FROM subreddits WHERE name = $1`;
+	// get subreddits from database
+	let query = `SELECT name FROM subreddits WHERE active = $1`;
 	let result;
 
 	try {
-		result = await pool.query(query, [ subName ]);
+		result = await pool.query(query, [ true ]);
+	} catch (err) {
+		console.log(err);
+	}
+
+	let hit;
+	for (var i = 0; i < result.rows.length; i++) {
+		hit = await replyToAllNewComments(result.rows[i].name);
+
+		if (hit !== null)
+			return hit;
+	}
+
+	return hit;
+}
+
+/*app.options('/api/1', cors());
+app.get('/api/1', async (req, res) => {
+	// let comments = await replyToAllNewComments('test');
+	let comments = await checkComments();
+	res.status(200).json(comments);
+});*/
+
+async function replyToAllNewComments(subName) {
+	// get keywords from database
+	let query = `SELECT keywords, answer FROM subreddits WHERE name = $1 AND active = $2`;
+	let result;
+
+	try {
+		result = await pool.query(query, [ subName, true ]);
 	} catch (err) {
 		console.log(err);
 	}
 
 	let keywords = [];
+	let answers = [];
 	for (var i = 0; i < result.rows.length; i++) {
-		keywords.push(result.rows[i].keywords);
+		for (var u = 0; u < result.rows[i].keywords.length; u++) {
+			keywords.push(result.rows[i].keywords[u].toLowerCase());
+			answers.push(result.rows[i].answer);
+		}
 	}
 
-	keywords = flattenDeep(keywords);
-
+	console.log(keywords, answers)
 
 	// get comments from reddit
 	try {
 		let subreddit = await r.getSubreddit(subName);
 		let comments = await subreddit.getNewComments();
-
-		console.log(comments.length, keywords.length, comments.length * keywords.length)
+		let hit = null;
 
 		for (var i = 0; i < comments.length; i++) {
 			for (var u = 0; u < keywords.length; u++) {
-				if (comments[i].body.indexOf(keywords[u]) !== -1) {
-					console.log("RESPOND TO tHIS POst");
-					console.log(comments[i]);
+				// check for: keywords, group name, own posts, already hit
+				if ((comments[i].body.toLowerCase().indexOf(keywords[u]) !== -1) && 
+					(comments[i].body.toLowerCase().indexOf(process.env.WAECM_GROUP_NAME) !== -1) &&
+				(comments[i].author.name !== "CoolerBamio") && (hit === null)) {
+					// check if comment already exists
+					let query = `SELECT * FROM comments WHERE comment_id = $1`;
+					let result;
+
+					try {
+						result = await pool.query(query, [ comments[i].id ]);
+						console.log(JSON.stringify(result.rows));
+					} catch (err) {
+						console.log(err);
+					}
+
+					// if not, reply
+					if (result.rows.length === 0) {
+						console.log("RESPOND TO tHIS POst", comments[i].id);
+						hit = comments[i];
+
+						comments[i].reply(answers[u]);
+
+						// save comment to database
+						query = `
+							INSERT INTO comments(comment_id, subreddit) VALUES($1, $2) RETURNING *
+						`;
+						try {
+							result = await pool.query(query, [ comments[i].id, subName ]);
+							console.log(result.rows[0]);
+						} catch (err) {
+							console.log(err.stack);
+						}
+					} else {
+						console.log("comment to this post already exists", comments[i].id);
+					}
 				}
 			}
 		}
 
-
-
-		return comments;
+		return hit;
 	} catch (err) {
 		console.log(err);
 		return err;
