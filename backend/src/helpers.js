@@ -8,6 +8,15 @@ function getSub(req) {
 	}
 }
 
+function isDefined(query) {
+	if (typeof query !== 'undefined' && query !== null) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 module.exports = {
 	getSub,
+	isDefined
 };

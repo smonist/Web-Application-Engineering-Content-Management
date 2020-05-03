@@ -27,7 +27,7 @@ const schedule = require('node-schedule');
 
 const fetch = require('node-fetch');
 
-const { getSub } = require('./helpers');
+const { getSub, isDefined } = require('./helpers');
 
 const app = express();
 app.use(helmet());
@@ -87,6 +87,11 @@ app.post('/api/addSubreddit', async (req, res) => {
 	const sub = getSub(req);
 	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
 
+	// input "validation"
+	if (!isDefined(req.body) || !isDefined(req.body.name)) {
+		return res.status(400).send('HTTP 400 Bad Request');
+	}
+
 	const body = req.body;
 	let pic;
 	let description;
@@ -133,6 +138,11 @@ app.post('/api/updateSubreddit', async (req, res) => {
 
 	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
 
+	// input "validation"
+	if (!isDefined(req.body) || !isDefined(req.body.keywords) || !isDefined(req.body.active) || !isDefined(req.body.answer) || !isDefined(req.body.id)) {
+		return res.status(400).send('HTTP 400 Bad Request');
+	}
+
 	const body = req.body;
 
 	let query = `
@@ -157,7 +167,17 @@ app.options('/api/deleteSubreddit', cors());
 app.get('/api/deleteSubreddit', async (req, res) => {
 	const sub = getSub(req);
 	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
-	const id = req.query.id;
+
+	// input "validation"
+	if (!isDefined(req.query) || !isDefined(req.query.id)) {
+		return res.status(400).send('HTTP 400 Bad Request');
+	}
+
+	const id = parseInt(req.query.id);
+
+	if (isNaN(parseInt(id)))
+		return res.status(400).send('HTTP 400 Bad Request');
+
 
 	const query = `
 		DELETE FROM subreddits WHERE id = $1
