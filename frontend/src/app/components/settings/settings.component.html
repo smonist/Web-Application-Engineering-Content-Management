@@ -3,7 +3,7 @@
 <div class="container">
   <h1 class="heading">Edit your added subreddits.</h1>
 
-  <div class="add flex" [routerLink]="['/add']">
+  <div class="add flex" [routerLink]="['/add']" *ngIf="subreddits.length < 3">
     <h4>Add Subreddit</h4>
     <fa-icon [icon]="faPlus"></fa-icon>
   </div>
