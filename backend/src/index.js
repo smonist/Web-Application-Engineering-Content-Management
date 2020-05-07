@@ -226,7 +226,9 @@ app.get('/api/getSubreddits', async (req, res) => {
 			values = [ ret.rows[i].name, ret.rows[i].name ];
 			let answers = await pool.query(query, values);
 
-			ret.rows[i].answers = answers.rows[0].count;
+			if(answers.rows[0]){
+				ret.rows[i].answers = answers.rows[0].count;
+			}
 		}
 
 
