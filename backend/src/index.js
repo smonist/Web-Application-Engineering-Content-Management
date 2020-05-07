@@ -6,17 +6,24 @@ const jwt = require('jsonwebtoken');
 
 // DB
 const { Pool } = require('pg');
+const connectionString = 'postgresql://admin:admin@dbs:5432/app-dbs';
+console.log(connectionString);
+
 const pool = new Pool({
+  connectionString: connectionString,
+})
+
+/*const pool = new Pool({
 	user: 'admin',
-	host: 'localhost',
+	host: 'dbs',
 	database: 'app-dbs',
 	password: 'admin',
-});
+});*/
 
 // Reddit APi
 const snoowrap = require('snoowrap');
 const r = new snoowrap({
-	userAgent: 'bot from /u/CoolerBamio',
+	userAgent: `bot from /u/${process.env.REDDIT_USERNAME}`,
 	clientId: process.env.REDDIT_CLIENT_ID,
 	clientSecret: process.env.REDDIT_CLIENT_SECRET,
 	username: process.env.REDDIT_USERNAME,
@@ -204,15 +211,25 @@ app.get('/api/getSubreddits', async (req, res) => {
 	const sub = getSub(req);
 	if (!sub) return res.status(401).send('HTTP 401 Unauthorized');
 
-	const query = `
+	let query = `
 		SELECT * FROM subreddits WHERE sub = $1
 	`;
 
-	const values = [sub];
+	let values = [sub];
 
 	try {
-		const ret = await pool.query(query, values);
+		let ret = await pool.query(query, values);
 		console.log(ret.rows);
+
+		for (var i = 0; i < ret.rows.length; i++) {
+			query = `select NAME, COUNT(*) from subreddits s inner join comments c on c.subreddit = $1 WHERE s.name = $2 GROUP BY NAME, sub`;
+			values = [ ret.rows[i].name, ret.rows[i].name ];
+			let answers = await pool.query(query, values);
+
+			ret.rows[i].answers = answers.rows[0].count;
+		}
+
+
 		res.status(200).json(ret.rows);
 	} catch (err) {
 		console.log(err);
