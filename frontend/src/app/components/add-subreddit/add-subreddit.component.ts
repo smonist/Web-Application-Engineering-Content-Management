@@ -14,6 +14,7 @@ import {
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-subreddit',
@@ -35,7 +36,8 @@ export class AddSubredditComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private http: HttpService,
-    private router: Router
+    private router: Router,
+    private toast: ToastrService
   ) {}
 
   ngOnInit(): void {}
@@ -43,9 +45,10 @@ export class AddSubredditComponent implements OnInit {
   onSubmit() {
     const value = this.add.value;
     value.keywords = value.keywords.split(' ');
-    this.http
-      .addSubreddit(value)
-      .subscribe((res) => this.router.navigate(['/dashboard']));
+    this.http.addSubreddit(value).subscribe((res) => {
+      this.toast.success('subreddit added');
+      this.router.navigate(['/dashboard']);
+    });
   }
 
   validateSubreddit(): AsyncValidatorFn {

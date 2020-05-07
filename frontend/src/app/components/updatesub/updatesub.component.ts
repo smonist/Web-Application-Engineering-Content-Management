@@ -16,6 +16,7 @@ import {
 import { Router } from '@angular/router';
 import { DataService } from 'src/app/services/data.service';
 import { Subreddit } from 'src/app/models/subreddit';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-updatesub',
@@ -40,7 +41,8 @@ export class UpdatesubComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpService,
     private router: Router,
-    private data: DataService
+    private data: DataService,
+    private toast: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +70,7 @@ export class UpdatesubComponent implements OnInit {
 
     this.http
       .updateSubreddit(this.subreddit)
-      .subscribe((res) => this.router.navigate(['/dashboard']));
+      .subscribe((res) => this.toast.success('subreddit updated'));
   }
 
   validateSubreddit(): AsyncValidatorFn {
