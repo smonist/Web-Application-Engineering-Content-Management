@@ -7,22 +7,24 @@
     No Subreddits added yet. Add your first subreddit
     <a [routerLink]="['/add']">here</a>
   </h2>
-
-  <div class="sub" *ngFor="let sub of subreddits$ | async">
-    <div class="flex">
-      <img [src]="sub.pic" alt="" />
-      <div>
-        <h1>
-          <a [href]="'https://www.reddit.com/' + sub.name" target="_blank">
-            {{ sub.name }}
-          </a>
-        </h1>
-        <span>{{ sub.desc }}</span>
+  <ng-container *ngFor="let sub of subreddits$ | async">
+    <div class="sub" *ngIf="sub.active">
+      <div class="flex">
+        <img [src]="sub.pic" alt="" />
+        <div>
+          <h1>
+            <a [href]="'https://www.reddit.com/r/' + sub.name" target="_blank">
+              {{ sub.name }}
+            </a>
+          </h1>
+          <span>Keywords: {{ sub.keywords }}</span> <br />
+          <span>{{ sub.description }}</span>
+        </div>
+      </div>
+      <div class="answers flex">
+        <fa-icon [icon]="faComment"></fa-icon>
+        <span>{{ sub.answers }}</span>
       </div>
     </div>
-    <div class="answers flex">
-      <fa-icon [icon]="faComment"></fa-icon>
-      <span>{{ sub.answers }}</span>
-    </div>
-  </div>
+  </ng-container>
 </div>

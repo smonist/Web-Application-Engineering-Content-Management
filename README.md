@@ -24,9 +24,10 @@ For the application followin technologies are going to be used:
 
 Following variables have to be set:
 
-- FRONTEND_PORT
-- BACKEND_PORT
-- DBS_PORT
+- REDDIT_CLIENT_ID
+- REDDIT_CLIENT_SECRET
+- REDDIT_USERNAME
+- REDDIT_PASSWORD
 
 ## DBS ENV VARIABLES
 

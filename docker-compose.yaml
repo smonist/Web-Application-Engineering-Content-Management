@@ -19,6 +19,12 @@ services:
     restart: always
     build: ./backend
     image: 030395/waecm-2020-group-20-bsp-2-backend:v1
+    environment:
+      REDDIT_USERNAME: 'CoolerBamio'
+      REDDIT_PASSWORD: 'JFeqw7pAHK3fZAcP7c83qy6Sx'
+      REDDIT_CLIENT_ID: 'E3-s2ZGChD9J2A'
+      REDDIT_CLIENT_SECRET: 'rO7VOkBeeMWl7Row4-hF2DZe2dM'
+      WAECM_GROUP_NAME: 'waecm-2020-group-20'
     volumes:
       - app:/usr/src/app/backend
     ports:
@@ -36,7 +42,9 @@ services:
     volumes:
       - app:/var/lib/postgresql/data
     ports:
-      - 5435:5435
+
+      - 5432:5432
+
 
 volumes:
   app:

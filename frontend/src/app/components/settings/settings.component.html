@@ -3,24 +3,46 @@
 <div class="container">
   <h1 class="heading">Edit your added subreddits.</h1>
 
-  <div class="add flex" [routerLink]="['/add']">
+  <div class="add flex" [routerLink]="['/add']" *ngIf="subreddits?.length < 3">
     <h4>Add Subreddit</h4>
     <fa-icon [icon]="faPlus"></fa-icon>
   </div>
 
   <div
     class="sub flex"
-    *ngFor="let sub of subreddits$ | async"
+    *ngFor="let sub of subreddits"
     [ngClass]="{ deactivated: !sub.active }"
   >
-    <div class="desc" [routerLink]="['/add', sub.id]">
-      <h1>{{ sub.name }}</h1>
-      <span>{{ sub.added | date }}</span>
+    <div class="desc" (click)="update(sub)">
+      <h1>{{ sub?.name }}</h1>
+      <span>{{ sub?.added | date }}</span>
     </div>
     <fa-icon
       class="delete"
       [icon]="faTimesCircle"
-      (click)="deleteSub(sub.id)"
+      (click)="deleteSub(sub.id, modal)"
     ></fa-icon>
   </div>
 </div>
+
+<!-- logout modal -->
+<ng-template #modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">
+      Do you really want to delete this subreddit?
+    </h4>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="modal.close(false)"
+    >
+      No
+    </button>
+
+    <button type="button" class="btn btn-primary" (click)="modal.close(true)">
+      Yes
+    </button>
+  </div>
+</ng-template>

@@ -13,6 +13,9 @@ import { NavComponent } from './components/nav/nav.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AddSubredditComponent } from './components/add-subreddit/add-subreddit.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { UpdatesubComponent } from './components/updatesub/updatesub.component';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     HeaderComponent,
     NavComponent,
     SettingsComponent,
-    AddSubredditComponent
+    AddSubredditComponent,
+    UpdatesubComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,9 +34,11 @@ import { ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     FontAwesomeModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

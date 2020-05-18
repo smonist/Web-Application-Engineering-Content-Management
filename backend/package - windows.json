@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js -host 0.0.0.0",
+    "start": "set WAECM_GROUP_NAME=waecm-2020-group-20&&set REDDIT_USERNAME=CoolerBamio&&set REDDIT_PASSWORD=JFeqw7pAHK3fZAcP7c83qy6Sx&&set REDDIT_CLIENT_ID=E3-s2ZGChD9J2A&&set REDDIT_CLIENT_SECRET=rO7VOkBeeMWl7Row4-hF2DZe2dM&& nodemon src/index.js -host 0.0.0.0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

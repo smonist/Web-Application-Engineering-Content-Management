@@ -14,16 +14,18 @@ import {
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
+import { DataService } from 'src/app/services/data.service';
+import { Subreddit } from 'src/app/models/subreddit';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-add-subreddit',
-  templateUrl: './add-subreddit.component.html',
-  styleUrls: ['./add-subreddit.component.scss'],
+  selector: 'app-updatesub',
+  templateUrl: './updatesub.component.html',
+  styleUrls: ['./updatesub.component.scss'],
 })
-export class AddSubredditComponent implements OnInit {
-  add = this.fb.group({
-    name: [, [Validators.required], [this.validateSubreddit()]],
+export class UpdatesubComponent implements OnInit {
+  update = this.fb.group({
+    name: [,],
     keywords: [, Validators.required],
     answer: [, Validators.required],
     active: [true, Validators.required],
@@ -33,22 +35,42 @@ export class AddSubredditComponent implements OnInit {
   faCheck = faCheck;
   faTimes = faTimes;
 
+  subreddit: Subreddit;
+
   constructor(
     private fb: FormBuilder,
     private http: HttpService,
     private router: Router,
+    private data: DataService,
     private toast: ToastrService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.data.subreddit$.subscribe((res) => {
+      this.subreddit = res;
+      this.update.get('name').setValue(res.name);
+      this.update.get('keywords').setValue(res.keywords.join(' '));
+      this.update.get('answer').setValue(res.answer);
+      this.update.get('active').setValue(res.active);
+    });
+
+    if (!this.subreddit) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
 
   onSubmit() {
-    const value = this.add.value;
+    const value = this.update.value;
     value.keywords = value.keywords.split(' ');
-    this.http.addSubreddit(value).subscribe((res) => {
-      this.toast.success('subreddit added');
-      this.router.navigate(['/dashboard']);
-    });
+    this.subreddit.keywords = value.keywords;
+    this.subreddit.answer = value.answer;
+    this.subreddit.active = value.active;
+
+    console.log(this.subreddit);
+
+    this.http
+      .updateSubreddit(this.subreddit)
+      .subscribe((res) => this.toast.success('subreddit updated'));
   }
 
   validateSubreddit(): AsyncValidatorFn {

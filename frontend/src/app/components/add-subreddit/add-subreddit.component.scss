@@ -5,3 +5,34 @@
     margin-left: 10px;
   }
 }
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+#loading,
+#valid,
+#invalid {
+  display: none;
+}
+
+#name.ng-pending + div > #loading {
+  display: block;
+}
+
+#name.ng-valid.ng-dirty + div > #valid {
+  border-color: green;
+  color: green;
+  display: block;
+}
+
+#name.ng-invalid.ng-dirty + div > #invalid {
+  border-color: red;
+  color: red;
+  display: block;
+}
+
+.error {
+  margin-bottom: 20px;
+  color: red;
+}
