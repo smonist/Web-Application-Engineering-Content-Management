@@ -5,7 +5,7 @@
     <label for="name">Subreddit:* </label>
     <div class="input-group">
       <input
-        type="text"
+        type="name"
         class="form-control"
         id="name"
         placeholder="Enter subreddit"
@@ -34,7 +34,7 @@
     <label for="keywords">Keywords:* (seperated with a space)</label>
     <div class="input-group">
       <input
-        type="text"
+        type="keywords"
         class="form-control"
         id="keywords"
         placeholder="programming javascript monney"
@@ -45,7 +45,7 @@
     <label for="answer">Answer:* </label>
     <div class="input-group">
       <textarea
-        type="text"
+        type="answer"
         class="form-control"
         id="answer"
         placeholder="Your answer ..."
@@ -84,10 +84,10 @@
         class="btn btn-outline-primary"
         [routerLink]="['/dashboard']"
       >
-        Cancle
+        Cancel
       </button>
 
-      <button [disabled]="!add.valid" type="submit" class="btn btn-primary">
+      <button [disabled]="!add.valid" type="submit" class="saveButton">
         Save
       </button>
     </div>

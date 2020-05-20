@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, NgModule, OnInit} from '@angular/core';
 import { faPlus, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { Subreddit } from 'src/app/models/subreddit';
 import { HttpService } from 'src/app/services/http.service';
@@ -7,11 +7,13 @@ import { Router } from '@angular/router';
 import { DataService } from 'src/app/services/data.service';
 import { ToastrService } from 'ngx-toastr';
 
+
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
+
 export class SettingsComponent implements OnInit {
   subreddits: Subreddit[];
 

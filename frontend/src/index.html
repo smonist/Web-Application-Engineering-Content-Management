@@ -5,8 +5,30 @@
   <title>Frontend</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <scripts src="protection-banner.js" defer></scripts>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+
 </head>
+
+<body>
+
+<!--<template id="protection-banner">
+  <style>
+    p {
+      color: white;
+      background-color: #666;
+      padding: 5px;
+    }
+  </style>
+</template>-->
+
+<div id = "root"></div>
+
+<protection-banner application-name = 'Web Application Custom Element' policy-link ='https://localhost:4200/cookies' on-accept="$event=true"></protection-banner>
+</body>
+
+
+
 <body>
   <app-root></app-root>
 </body>

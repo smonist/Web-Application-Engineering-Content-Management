@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <scripts src="app.js" defer></scripts>
+</head>
+<body>
+
+<div>
+  <router-outlet path="/" exact component={Login}></router-outlet>
+    {this.state.isPrivacyBanner && <privacy-banner ref={this.policyRef} className="banner" on-accept="accept"
+    application-name="Web App Eng" policy-link="/cookies"}
+</div>
+
+</body>
+</html>

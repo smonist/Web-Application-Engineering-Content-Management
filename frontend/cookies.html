@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <scripts src="cookies.js" defer></scripts>
+</head>
+<body>
+
+<div className={'cookiesFormat'}>
+  <label>Cookies</label>
+  <button block bssize='large' id='cookiesBackButton' onclick={this.returnToPreviousPage.bind(this)} type= "submit"}>
+          Return State</button>
+  <div className={'cookiesCheckBox'}>
+    <label>Cookies CheckBox: </label>
+    <input type={'checkbox'} [defaultChecked]= "{this.state.ifAccepted}" onchange={this.flipCheckedBox.bind(this)}>
+  </div>
+</div>
+</body>
+</html>

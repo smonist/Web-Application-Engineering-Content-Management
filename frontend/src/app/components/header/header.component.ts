@@ -6,6 +6,7 @@ import { Profile } from 'src/app/models/profile';
 import { AuthService } from 'src/app/services/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
