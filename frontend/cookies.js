@@ -27,19 +27,13 @@ export default class cookies extends React.Component{
     }
 
     if(check){
-      localStorage.setItem('cookies', 'ACCEPTED');
+      localStorage.setItem('cookies', 'accepted');
     }else{
       localStorage.removeItem('cookies');
     }
 
     this.setState({ifAccepted: check});
 
-  }
-
-  render() {
-    return {
-
-    };
   }
 
 }
