@@ -1,3 +1,4 @@
+#change me
 name: BUILD FRONTEND
 
 on:
@@ -26,11 +27,21 @@ jobs:
     - run: mkdir zip
     - run: sudo apt install zip
     - run: zip -r ./zip/build.zip ./dist/frontend
+    - run: ls
+    - name: upload build artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: ./frontend/zip/build.zip
+    - name: download build artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: build
     - name: Upload ftp
       uses: sebastianpopp/ftp-action@releases/v2
       with:
         host: ${{ secrets.FTP_SERVER }}
         user: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        localDir: "./zip"
+        localDir: "build"
         remoteDir: "waecm"
