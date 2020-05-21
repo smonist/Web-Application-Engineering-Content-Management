@@ -60,6 +60,7 @@ the cookie banner can be de- and activated on http://localhost:4200/policy
 ## CI
 
 We have chosen GitHub actions for our CI because it seemed like the obvious answers. Our repro is on GitHub so actions looked like a perfect fit. After using it we can say GitHub actions sucks. Troubleshooting and testing is nearly impossible as you cannot trigger an action manually. You need to commit something in order to trigger an action which unnecessarily clutters the commit history. All in all, 0/10 for GitHub actions, use Gitlab instead.
+Download the build artifact [here](http://waecm.forceless.net/)
 
 ## CUSTOM COMPONENT
 
