@@ -6,6 +6,8 @@ import { LoginGuard } from './guards/login.guard';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AddSubredditComponent } from './components/add-subreddit/add-subreddit.component';
 import { UpdatesubComponent } from './components/updatesub/updatesub.component';
+import { PolicyComponent } from './policy/policy.component';
+import { LoggedInComponent } from './logged-in/logged-in.component';
 
 const routes: Routes = [
   {
@@ -18,24 +20,31 @@ const routes: Routes = [
     component: LoginComponent,
   },
   {
-    path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [LoginGuard],
+    path: 'policy',
+    component: PolicyComponent,
   },
   {
-    path: 'settings',
-    component: SettingsComponent,
-    canActivate: [LoginGuard],
-  },
-  {
-    path: 'add',
-    component: AddSubredditComponent,
-    canActivate: [LoginGuard],
-  },
-  {
-    path: 'update',
-    component: UpdatesubComponent,
-    canActivate: [LoginGuard],
+    path: '',
+    component: LoggedInComponent,
+    children: [
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent,
+      },
+      {
+        path: 'add',
+        component: AddSubredditComponent,
+      },
+      {
+        path: 'update',
+        component: UpdatesubComponent,
+      },
+    ],
+    canActivateChild: [LoginGuard],
   },
   {
     path: '**',

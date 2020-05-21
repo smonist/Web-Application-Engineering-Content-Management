@@ -16,6 +16,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { UpdatesubComponent } from './components/updatesub/updatesub.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PolicyComponent } from './policy/policy.component';
+import { LoggedInComponent } from './logged-in/logged-in.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     SettingsComponent,
     AddSubredditComponent,
     UpdatesubComponent,
+    PolicyComponent,
+    LoggedInComponent,
   ],
   imports: [
     BrowserModule,
