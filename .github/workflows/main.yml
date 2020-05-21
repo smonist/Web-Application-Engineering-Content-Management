@@ -32,7 +32,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: build
-        path: ./zip/build.zip
+        path: ./frontend/zip/build.zip
     - name: download build artifact
       uses: actions/download-artifact@v1
       with:
