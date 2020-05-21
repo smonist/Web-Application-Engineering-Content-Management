@@ -1,0 +1,11 @@
+<app-nav></app-nav>
+
+<div class="container">
+  <label for="cookies"> Cookie policy accepted</label><br />
+  <input
+    type="checkbox"
+    name="cookies"
+    [checked]="checked"
+    (change)="updatePolicy()"
+  />
+</div>

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {
-  CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   UrlTree,
   Router,
+  CanActivateChild,
 } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { DataService } from '../services/data.service';
@@ -15,7 +15,7 @@ import { tap, map, catchError } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class LoginGuard implements CanActivate {
+export class LoginGuard implements CanActivateChild {
   token;
   decode;
   errorRedirect = this.router.parseUrl('/login');
@@ -28,7 +28,7 @@ export class LoginGuard implements CanActivate {
     this.token = sessionStorage.getItem('token');
   }
 
-  canActivate(
+  canActivateChild(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ):
