@@ -31,9 +31,7 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "protection-banner.js",
-              "cookies.js",
-              "app.js"
+              "src/assets/cookieBanner.js"
             ]
           },
           "configurations": {
