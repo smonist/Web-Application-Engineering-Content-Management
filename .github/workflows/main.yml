@@ -29,10 +29,10 @@ jobs:
     - run: zip -r ./zip/build.zip ./dist/frontend
     - run: ls
     - name: upload build artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: build
-          path: ./zip/build.zip
+      uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: ./zip/build.zip
     - name: download build artifact
       uses: actions/download-artifact@v1
       with:
