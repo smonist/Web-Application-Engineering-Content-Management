@@ -19,6 +19,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: ls
     - run: cd frontend
+    - run: ls
     - run: npm install
     - run: npm run build
     - run: mkdir zip
