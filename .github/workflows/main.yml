@@ -1,0 +1,33 @@
+name: BUILD FRONTEND
+
+on:
+  push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: cd frontend
+    - run: npm install
+    - run: npm run build
+    - run: mkdir zip
+    - run: sudo apt install zip
+    - run: zip -r ./zip/build.zip ./dist/frontend
+    - name: Upload ftp
+      uses: sebastianpopp/ftp-action@releases/v2
+      with:
+        host: ${{ secrets.FTP_SERVER }}
+        user: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        localDir: "./zip"
+        remoteDir: "waecm"
