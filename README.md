@@ -54,3 +54,13 @@ To include the cookie banner into a website one has to include [this](https://ra
 ## COOKIE BANNER TEST
 
 the cookie banner can be de- and activated on http://localhost:4200/policy
+
+# SHORT DESCRIPTION WHY WE USED WHAT WE USED
+
+## CI
+
+We have chosen GitHub actions for our CI because it seemed like the obvious answers. Our repro is on GitHub so actions looked like a perfect fit. After using it we can say GitHub actions sucks. Troubleshooting and testing is nearly impossible as you cannot trigger an action manually. You need to commit something in order to trigger an action which unnecessarily clutters the commit history. All in all, 0/10 for GitHub actions, use Gitlab instead.
+
+## CUSTOM COMPONENT
+
+We tried to make custom components with angular. After 40 mins of troubleshooting stupid build errors we gave up and build the custom component with plain old JS instead. It works perfectly right out of the box.
