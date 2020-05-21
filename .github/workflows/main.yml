@@ -33,9 +33,9 @@ jobs:
           name: build
           path: ./zip/build.zip
     - name: download build artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: build
+      uses: actions/download-artifact@v1
+      with:
+        name: build
     - name: Upload ftp
       uses: sebastianpopp/ftp-action@releases/v2
       with:
