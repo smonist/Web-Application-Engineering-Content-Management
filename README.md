@@ -50,3 +50,7 @@ Current Port application is using are:
 ## COOKIE BANNER CUSTOM ELEMENT
 
 To include the cookie banner into a website one has to include [this](https://raw.githubusercontent.com/YannicEl/cookieBanner/master/cookieBanner.js) script. The element itslef can then be used with the selector 'cookie-banner' (`<cookie-banner></cookie-banner>`).
+
+## COOKIE BANNER TEST
+
+the cookie banner can be de- and activated on http://localhost:4200/policy
